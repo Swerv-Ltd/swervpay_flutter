@@ -1,0 +1,24 @@
+name: swervpay_widget
+description: Official Swervpay Widget for Flutter https://docs.swervpay.co/sdks/flutter.
+version: 0.0.6
+homepage: https://docs.swervpay.co/sdks/flutter
+repository: https://github.com/swerv-ltd/swervpay-flutter
+issue_tracker: https://github.com/swerv-ltd/swervpay-flutter/issues
+documentation: https://docs.swervpay.co/sdks/flutter
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter: ^4.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+# The following section is specific to Flutter packages.
+flutter:
