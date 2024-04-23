@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swervpay_widget/swervpay_widget.dart';
 
@@ -36,22 +37,28 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await SwervpayWidget.launchWidget(
-            context,
-            key: 'pk_dev_123',
-            businessId: 'bsn_123',
-            //checkoutId: 'hbnbbbbbb',
-            data: SwervpayCheckoutDataModel(
-              reference: DateTime.now().toString(),
-              amount: 100,
-              description: 'description',
-              currency: 'NGN',
+          Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (c) => SwervpayView(
+                sandbox: true,
+                publicKey: const String.fromEnvironment('SWERV_PUBLIC_KEY',
+                    defaultValue: 'pk_dev_123'),
+                businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
+                    defaultValue: 'bsn_123'),
+                //checkoutId: 'hbnbbbbbb',
+                data: SwervpayCheckoutDataModel(
+                  reference: DateTime.now().toString(),
+                  amount: 10000,
+                  description: 'description',
+                  currency: 'NGN',
+                ),
+                onSuccess: (response) {
+                  print(response);
+                },
+                onClose: () => print('closed'),
+                onLoad: () => print('loaded'),
+              ),
             ),
-            onSuccess: (response) {
-              print(response);
-            },
-            onClose: () => print('closed'),
-            onLoad: () => print('loaded'),
           );
         },
         tooltip: 'Increment',
@@ -59,7 +66,29 @@ class HomePage extends StatelessWidget {
       ), //
       body: Center(
         child: GestureDetector(
-          onTap: () async {},
+          onTap: () async {
+            // Using showDialog
+            await SwervpayWidget.launchWidget(
+              context,
+              sandbox: true,
+              key: const String.fromEnvironment('SWERV_PUBLIC_KEY',
+                  defaultValue: 'pk_dev_123'),
+              businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
+                  defaultValue: 'bsn_123'),
+              //checkoutId: 'hbnbbbbbb',
+              data: SwervpayCheckoutDataModel(
+                reference: DateTime.now().toString(),
+                amount: 100,
+                description: 'description',
+                currency: 'NGN',
+              ),
+              onSuccess: (response) {
+                print(response);
+              },
+              onClose: () => print('closed'),
+              onLoad: () => print('loaded'),
+            );
+          },
           child: const Text('Open Swervpay Widget'),
         ),
       ),

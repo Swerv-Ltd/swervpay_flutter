@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:swervpay_widget/swervpay_widget.dart';
 
 class SwervpayWidget {
-  static Future launchWidget(
-    BuildContext ctx, {
-    String? key,
-    String? businessId,
-    SwervpayCheckoutScope scope = SwervpayCheckoutScope.deposit,
-    SwervpayCheckoutDataModel? data,
-    String? checkoutId,
-    void Function(SwervpayCheckoutResponseModel response)? onSuccess,
-    VoidCallback? onClose,
-    VoidCallback? onLoad,
-  }) async {
+  static Future launchWidget(BuildContext ctx,
+      {String? key,
+      bool sandbox = false,
+      String? businessId,
+      SwervpayCheckoutScope scope = SwervpayCheckoutScope.deposit,
+      SwervpayCheckoutDataModel? data,
+      String? checkoutId,
+      void Function(SwervpayCheckoutResponseModel response)? onSuccess,
+      VoidCallback? onClose,
+      VoidCallback? onLoad,
+      ValueChanged<String>? onError}) async {
     // Launch the Swervpay widget
 
     return showDialog(
@@ -27,6 +27,8 @@ class SwervpayWidget {
                 publicKey: key,
                 scope: scope,
                 data: data,
+                sandbox: sandbox,
+                onError: onError,
                 businessId: businessId,
                 checkoutId: checkoutId,
                 onSuccess: onSuccess,

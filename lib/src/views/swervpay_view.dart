@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:swervpay_widget/src/const.dart';
 import 'package:swervpay_widget/src/raw/swervpay_html.dart';
 import 'package:swervpay_widget/swervpay_widget.dart';
@@ -16,6 +19,8 @@ class SwervpayView extends StatefulWidget {
     this.onClose,
     this.onLoad,
     this.onSuccess,
+    this.onError,
+    this.sandbox = false,
     this.scope = SwervpayCheckoutScope.deposit,
     super.key,
   });
@@ -25,9 +30,11 @@ class SwervpayView extends StatefulWidget {
   final SwervpayCheckoutScope scope;
   final SwervpayCheckoutDataModel? data;
   final String? checkoutId;
+  final bool sandbox;
   final void Function(SwervpayCheckoutResponseModel response)? onSuccess;
   final VoidCallback? onClose;
   final VoidCallback? onLoad;
+  final ValueChanged<String>? onError;
 
   @override
   State<SwervpayView> createState() => _SwervpayViewState();
@@ -41,9 +48,6 @@ class _SwervpayViewState extends State<SwervpayView> {
       ..addJavaScriptChannel(
         swervpayJavascriptInterface,
         onMessageReceived: (data) {
-          print(swervpayJavascriptInterface);
-          print('${(json.decode(data.message))}');
-
           handleResponse(data.message);
         },
       )
@@ -51,7 +55,6 @@ class _SwervpayViewState extends State<SwervpayView> {
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar.
-            print(progress);
           },
           onPageStarted: (String url) {
             isLoading = true;
@@ -60,22 +63,21 @@ class _SwervpayViewState extends State<SwervpayView> {
             isLoading = false;
           },
           onWebResourceError: (WebResourceError error) {
-            print(error.description);
+            hasError = true;
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.toLowerCase().contains('swervpay')) {
-              return NavigationDecision.navigate;
-            }
             return NavigationDecision.navigate;
           },
         ),
       )
-      // ..loadRequest(Uri.parse('https://swyftpay.io'));
-      ..loadRequest(
-        Uri.dataFromString(
-          buildWidgetHtml(widget.publicKey, widget.businessId,
-              widget.checkoutId, widget.scope, widget.data),
-          mimeType: 'text/html',
+      ..loadHtmlString(
+        buildWidgetHtml(
+          widget.publicKey,
+          widget.businessId,
+          widget.checkoutId,
+          widget.scope,
+          widget.data,
+          widget.sandbox,
         ),
       );
 
@@ -102,16 +104,44 @@ class _SwervpayViewState extends State<SwervpayView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _controller == null
-          ? const Center(child: CupertinoActivityIndicator())
-          : WebViewWidget(
-              controller: _controller!,
+    return PopScope(
+      canPop: true,
+      child: Material(
+        child: GestureDetector(
+          onTap: () {
+            WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+          },
+          child: SafeArea(
+            child: Stack(
+              children: [
+                if (_controller == null || isLoading == true)
+                  const Center(child: CupertinoActivityIndicator())
+                else
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.transparent)),
+                    child: WebViewWidget(
+                      controller: _controller!,
+                      gestureRecognizers:
+                          <Factory<OneSequenceGestureRecognizer>>{}..add(
+                              Factory<TapGestureRecognizer>(
+                                () => TapGestureRecognizer()
+                                  ..onTapDown = (tap) {
+                                    SystemChannels.textInput
+                                        .invokeMethod('TextInput.hide');
+                                  },
+                              ),
+                            ),
+                    ),
+                  ),
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 
-  /// parse event from javascript channel
   void handleResponse(String body) async {
     try {
       final Map<String, dynamic> bodyMap = json.decode(body);
@@ -136,13 +166,9 @@ class _SwervpayViewState extends State<SwervpayView> {
         }
       }
     } catch (e) {
-      print('SwervpayClient, ${e.toString()}');
+      if (mounted && widget.onError != null) {
+        widget.onError!('SwervpayClient, ${e.toString()}');
+      }
     }
   }
-
-  // void _handleInit() async {
-  //   SystemChannels.textInput.invokeMethod('TextInput.hide');
-  //   if (Platform.isAndroid)
-  //     WebViewController.platform = SurfaceAndroidWebView();
-  // }
 }
