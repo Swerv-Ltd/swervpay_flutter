@@ -1,39 +1,101 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+<div align="center">
+  <a href="https://swervpay.co" target="_blank">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://avatars.githubusercontent.com/u/108650375?s=200&v=4">
+    <img src="https://avatars.githubusercontent.com/u/108650375?s=200&v=4" width="60" alt="Logo"/>
+  </picture>
+  </a>
+</div>
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+<h1 align="center">Flutter Widget for Swervpay</h1>
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+[![pub package][pub_badge]][pub_badge_link]
+[![License: MIT][license_badge]][license_badge_link]
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<p align="center">
+    <br />
+    <a href="https://docs.swervpay.co" rel="dofollow"><strong>Explore the docs »</strong></a>
+    <br />
+ </p>
+  
+<p align="center">  
+    <a href="https://twitter.com/swyftpay_io">X (Twitter)</a>
+    ·
+    <a href="https://www.linkedin.com/company/swervltd">Linkedin</a>
+    ·
+    <a href="https://docs.swervpay.co/changelog">Changelog</a>
+</p>
 
-## Features
+# Installation
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+```bash
+$ flutter pub add swervpay_dart
 
-## Getting started
+# OR
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+$ dart pub add swervpay_widget
 ```
 
-## Additional information
+# Configuration
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Create a new instance of Swervpay with your secret_key and business_id:
+
+```dart
+import "package:swervpay_widget/swervpay_widget.dart";
+
+Navigator.of(context).push(
+    CupertinoPageRoute(
+        builder: (c) => SwervpayView(
+            sandbox: true,
+            publicKey: const String.fromEnvironment('SWERV_PUBLIC_KEY', defaultValue: 'pk_dev_123'),
+            businessId: const String.fromEnvironment('SWERV_BUSINESS_ID', defaultValue: 'bsn_123'),
+            //checkoutId: 'hbnbbbbbb',
+            data: SwervpayCheckoutDataModel(
+                reference: DateTime.now().toString(),
+                amount: 10000,
+                description: 'description',
+                currency: 'NGN',
+            ),
+            onSuccess: (response) {
+                print(response);
+            },
+            onClose: () => print('closed'),
+            onLoad: () => print('loaded'),
+        ),
+    ),
+);
+
+
+// OR
+
+await SwervpayWidget.launchWidget(
+    context,
+    sandbox: true,
+    key: const String.fromEnvironment('SWERV_PUBLIC_KEY', defaultValue: 'pk_dev_123'),
+    businessId: const String.fromEnvironment('SWERV_BUSINESS_ID', defaultValue: 'bsn_123'),
+    //checkoutId: 'hbnbbbbbb',
+    data: SwervpayCheckoutDataModel(
+        reference: DateTime.now().toString(),
+        amount: 100,
+        description: 'description',
+        currency: 'NGN',
+    ),
+    onSuccess: (response) {
+        print(response);
+    },
+    onClose: () => print('closed'),
+    onLoad: () => print('loaded'),
+);
+```
+
+Replace <SECRET_KEY> and <BUSINESS_ID> with your actual secret key and business ID.
+
+## Documentation
+
+See [docs for Dart here][doc_link]
+
+[pub_badge]: https://img.shields.io/pub/v/swervpay_widget.svg
+[pub_badge_link]: https://pub.dartlang.org/packages/swervpay_widget
+[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[license_badge_link]: https://opensource.org/licenses/MIT
+[doc_link]: https://docs.swervpay.co/sdks/widget
