@@ -29,11 +29,7 @@
 # Installation
 
 ```bash
-$ flutter pub add swervpay_dart
-
-# OR
-
-$ dart pub add swervpay_widget
+$ flutter pub add swervpay_widget
 ```
 
 # Configuration
@@ -88,11 +84,11 @@ await SwervpayWidget.launchWidget(
 );
 ```
 
-Replace <SECRET_KEY> and <BUSINESS_ID> with your actual secret key and business ID.
+Replace <SWERV_PUBLIC_KEY> and <SWERV_BUSINESS_ID> with your actual secret key and business ID.
 
 ## Documentation
 
-See [docs for Dart here][doc_link]
+See [docs for widget here][doc_link]
 
 [pub_badge]: https://img.shields.io/pub/v/swervpay_widget.svg
 [pub_badge_link]: https://pub.dartlang.org/packages/swervpay_widget

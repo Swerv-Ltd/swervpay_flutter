@@ -2,8 +2,8 @@ name: swervpay_widget
 description: Official Swervpay Widget for Flutter https://docs.swervpay.co/sdks/widget.
 version: 0.0.1
 homepage: https://docs.swervpay.co/sdks/flutter
-repository: https://github.com/swerv-ltd/swervpay-flutter
-issue_tracker: https://github.com/swerv-ltd/swervpay-flutter/issues
+repository: https://github.com/swerv-ltd/swervpay_flutter
+issue_tracker: https://github.com/swerv-ltd/swervpay_flutter/issues
 documentation: https://docs.swervpay.co/sdks/flutter
 
 environment:
