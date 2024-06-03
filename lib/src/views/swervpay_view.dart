@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -58,14 +59,21 @@ class _SwervpayViewState extends State<SwervpayView> {
           },
           onPageStarted: (String url) {
             isLoading = true;
+            log('page staerted');
           },
           onPageFinished: (String url) {
             isLoading = false;
+            log('page finished');
+
+            setState(() {});
           },
           onWebResourceError: (WebResourceError error) {
             hasError = true;
+            log('page error');
+            setState(() {});
           },
           onNavigationRequest: (NavigationRequest request) {
+            log('navigate request');
             return NavigationDecision.navigate;
           },
         ),
@@ -142,32 +150,79 @@ class _SwervpayViewState extends State<SwervpayView> {
     );
   }
 
+//   void handleResponse(String body) async {
+//     try {
+//       final Map<String, dynamic> bodyMap = json.decode(body);
+//       String? key = bodyMap['type'] as String?;
+//       if (key != null) {
+//         switch (key) {
+//           case 'onClose':
+//           case 'swervpay.widget.closed':
+//             if (mounted && widget.onClose != null) widget.onClose!();
+//             break;
+//           case 'onSuccess':
+//           case 'swervpay.widget.checkout_complete':
+//             var successModel = SwervpayCheckoutResponseModel.fromJson(body);
+//             if (mounted && widget.onSuccess != null) {
+//               widget.onSuccess!(successModel);
+//             }
+//             break;
+//           case 'onLoad':
+//             if (mounted && widget.onLoad != null) widget.onLoad!();
+//             break;
+//           default:
+//         }
+//       }
+//     } catch (e) {
+//       if (mounted && widget.onError != null) {
+//         widget.onError!('SwervpayClient, ${e.toString()}');
+//       }
+//     }
+//   }
+// }
   void handleResponse(String body) async {
     try {
       final Map<String, dynamic> bodyMap = json.decode(body);
-      String? key = bodyMap['type'] as String?;
-      if (key != null) {
-        switch (key) {
+
+      String? messageType = bodyMap['type'] as String?;
+
+      if (messageType != null) {
+        switch (messageType) {
           case 'onClose':
           case 'swervpay.widget.closed':
-            if (mounted && widget.onClose != null) widget.onClose!();
+            if (mounted && widget.onClose != null) {
+              widget.onClose!();
+            }
             break;
           case 'onSuccess':
           case 'swervpay.widget.checkout_complete':
-            var successModel = SwervpayCheckoutResponseModel.fromJson(body);
+            SwervpayCheckoutResponseModel successModel =
+                SwervpayCheckoutResponseModel.fromJson(bodyMap['data']);
             if (mounted && widget.onSuccess != null) {
+              log('got here');
               widget.onSuccess!(successModel);
             }
             break;
           case 'onLoad':
-            if (mounted && widget.onLoad != null) widget.onLoad!();
+            if (mounted && widget.onLoad != null) {
+              widget.onLoad!();
+            }
             break;
           default:
+            if (mounted && widget.onError != null) {
+              widget.onError!('Unexpected message type received: $messageType');
+            }
+            break;
+        }
+      } else {
+        if (mounted && widget.onError != null) {
+          widget.onError!('Received null message type from the WebView');
         }
       }
     } catch (e) {
       if (mounted && widget.onError != null) {
-        widget.onError!('SwervpayClient, ${e.toString()}');
+        widget
+            .onError!('Error processing message from WebView: ${e.toString()}');
       }
     }
   }
