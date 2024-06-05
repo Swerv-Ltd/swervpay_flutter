@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
                   currency: 'NGN',
                 ),
                 onSuccess: (response) {
-                  log(response.toString());
+                  log('Example success works ${response.toString()}');
                 },
                 onClose: () {
                   Navigator.of(context).pop();

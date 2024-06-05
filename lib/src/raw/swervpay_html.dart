@@ -21,6 +21,7 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
     <script type="text/javascript" src="https://cdn.swervpay.co/v1/widget.js"></script>
     <script type="text/javascript">
         window.onload = setupSwervCheckoutWidget;
+        sendMessage({ type: "debug", data: "Page loaded and script running" });
         function setupSwervCheckoutWidget() {
 
             const data = JSON.parse(`${jsonEncode({...?data?.toMap()})}`)
@@ -40,8 +41,11 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
               businessId: "$businessId",
               scope: "${scope.name}",
               data: data,
-              onSuccess: function (response) {
-                 sendMessage({ type: "onSuccess", data: response})
+              onSuccess: function(response) {
+              sendMessage({ type: "onSuccess", data: response });
+              setTimeout(function() {
+              sendMessage({ type: "onClose" });
+              }, 1000); 
               },
               onClose: function () {
                 sendMessage({ type: "onClose" })
@@ -52,6 +56,7 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
             checkout.setup();
             checkout.open();
             function sendMessage(message) {
+              console.log('Sending message:', message);
               if (window.SwervpayJavascriptInterface && window.SwervpayJavascriptInterface.postMessage) {
                   window.SwervpayJavascriptInterface.postMessage(JSON.stringify(message));
               }
