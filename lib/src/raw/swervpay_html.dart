@@ -22,6 +22,7 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
     <script type="text/javascript">
         window.onload = setupSwervCheckoutWidget;
         sendMessage({ type: "debug", data: "Page loaded and script running" });
+        var onSuccessCalled = false;
         function setupSwervCheckoutWidget() {
 
             const data = JSON.parse(`${jsonEncode({...?data?.toMap()})}`)
@@ -43,14 +44,19 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
               data: data,
               onSuccess: function(response) {
               sendMessage({ type: "onSuccess", data: response });
+              onSuccessCalled = true;
               setTimeout(function() {
-              sendMessage({ type: "onClose" });
+              if (!onSuccessCalled) { // Check flag before closing
+                sendMessage({ type: "onClose" });
+              }
               }, 1000); 
               },
               onClose: function () {
-                sendMessage({ type: "onClose" })
+               if (!onSuccessCalled) { // Check flag before sending onClose message
+              sendMessage({ type: "onClose" })
+              }
               },
-            };
+              };
 
             const checkout = new Swervpay.Checkout(config);
             checkout.setup();
