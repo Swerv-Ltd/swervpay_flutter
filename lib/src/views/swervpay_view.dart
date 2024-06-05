@@ -195,6 +195,8 @@ class _SwervpayViewState extends State<SwervpayView> {
         switch (messageType) {
           case 'onClose':
           case 'swervpay.widget.closed':
+            _onSuccessCalled = true;
+
             if (!_onSuccessCalled) {
               if (mounted && widget.onClose != null) {
                 widget.onClose?.call();
@@ -208,7 +210,7 @@ class _SwervpayViewState extends State<SwervpayView> {
             SwervpayCheckoutResponseModel successModel =
                 SwervpayCheckoutResponseModel.fromJson(body);
             if (mounted && widget.onSuccess != null) {
-              log('got here');
+              log('got here, $_onSuccessCalled');
               widget.onSuccess?.call(successModel);
             }
             break;
