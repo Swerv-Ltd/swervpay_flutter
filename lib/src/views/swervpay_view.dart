@@ -95,6 +95,7 @@ class _SwervpayViewState extends State<SwervpayView> {
   WebViewController? _controller;
 
   bool _isLoading = true;
+  bool _onSuccessCalled = false;
   bool get isLoading => _isLoading;
   set isLoading(bool val) {
     _isLoading = val;
@@ -181,7 +182,6 @@ class _SwervpayViewState extends State<SwervpayView> {
 //                  sendMessage({ type: "onSuccess", data: response})
 //               },
 // }
-  bool onSuccessCalled = false;
 
   void handleResponse(String body) async {
     log('Received raw message: $body');
@@ -195,31 +195,32 @@ class _SwervpayViewState extends State<SwervpayView> {
         switch (messageType) {
           case 'onClose':
           case 'swervpay.widget.closed':
-            if (!onSuccessCalled) {
+            if (!_onSuccessCalled) {
               if (mounted && widget.onClose != null) {
-                widget.onClose!();
+                widget.onClose?.call();
                 break;
               }
             }
           // break;
           case 'onSuccess':
-            onSuccessCalled = true;
           case 'swervpay.widget.checkout_complete':
+            _onSuccessCalled = true;
             SwervpayCheckoutResponseModel successModel =
                 SwervpayCheckoutResponseModel.fromJson(body);
             if (mounted && widget.onSuccess != null) {
               log('got here');
-              widget.onSuccess!(successModel);
+              widget.onSuccess?.call(successModel);
             }
             break;
           case 'onLoad':
             if (mounted && widget.onLoad != null) {
-              widget.onLoad!();
+              widget.onLoad?.call();
             }
             break;
           default:
             if (mounted && widget.onError != null) {
-              widget.onError!('Unexpected message type received: $messageType');
+              widget.onError
+                  ?.call('Unexpected message type received: $messageType');
             }
             break;
         }
