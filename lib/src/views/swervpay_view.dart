@@ -181,6 +181,7 @@ class _SwervpayViewState extends State<SwervpayView> {
 //                  sendMessage({ type: "onSuccess", data: response})
 //               },
 // }
+  bool onSuccessCalled = false;
 
   void handleResponse(String body) async {
     log('Received raw message: $body');
@@ -194,12 +195,15 @@ class _SwervpayViewState extends State<SwervpayView> {
         switch (messageType) {
           case 'onClose':
           case 'swervpay.widget.closed':
-            if (mounted && widget.onClose != null) {
-              widget.onClose!();
-              break;
+            if (!onSuccessCalled) {
+              if (mounted && widget.onClose != null) {
+                widget.onClose!();
+                break;
+              }
             }
           // break;
           case 'onSuccess':
+            onSuccessCalled = true;
           case 'swervpay.widget.checkout_complete':
             SwervpayCheckoutResponseModel successModel =
                 SwervpayCheckoutResponseModel.fromJson(body);
@@ -232,6 +236,13 @@ class _SwervpayViewState extends State<SwervpayView> {
     }
   }
 }
+
+
+
+
+
+
+
 
 // import 'dart:developer';
 
