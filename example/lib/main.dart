@@ -43,14 +43,11 @@ class HomePage extends StatelessWidget {
             CupertinoPageRoute(
               builder: (c) => SwervpayView(
                 sandbox: true,
-                publicKey: 'pk_dev_AZSvUkytFmpxTKEGkHgM',
-                //  const String.fromEnvironment('SWERV_PUBLIC_KEY',
-                //     defaultValue: 'pk_dev_123')
-
-                businessId: 'bsn_Ni1B1z3dzMy4o7y2tVPw',
-                // const String.fromEnvironment('SWERV_BUSINESS_ID',
-                //     defaultValue: 'bsn_123'),
-                //checkoutId: 'hbnbbbbbb',
+                publicKey: const String.fromEnvironment('SWERV_PUBLIC_KEY',
+                    defaultValue: 'pk_dev_123'),
+                businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
+                    defaultValue: 'bsn_123'),
+                checkoutId: 'hbnbbbbbb',
                 data: SwervpayCheckoutDataModel(
                   customer: SwervpayCustomerDataModel(
                       email: 'emmanuelolajubu90@gmail.com',
@@ -85,13 +82,11 @@ class HomePage extends StatelessWidget {
             await SwervpayWidget.launchWidget(
               context,
               sandbox: true,
-              key: 'pk_dev_AZSvUkytFmpxTKEGkHgM',
-              // key: const String.fromEnvironment('SWERV_PUBLIC_KEY',
-              //     defaultValue: 'pk_dev_123'),
-              businessId: 'bsn_Ni1B1z3dzMy4o7y2tVPw',
-              // businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
-              //     defaultValue: 'bsn_123'),
-              //checkoutId: 'hbnbbbbbb',
+              key: const String.fromEnvironment('SWERV_PUBLIC_KEY',
+                  defaultValue: 'pk_dev_123'),
+              businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
+                  defaultValue: 'bsn_123'),
+              checkoutId: 'hbnbbbbbb',
               data: SwervpayCheckoutDataModel(
                 customer: SwervpayCustomerDataModel(
                     email: 'emmanuelolajubu90@gmail.com',
