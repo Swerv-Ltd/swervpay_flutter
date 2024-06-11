@@ -43,7 +43,8 @@ Navigator.of(context).push(
     CupertinoPageRoute(
         builder: (c) => SwervpayView(
             sandbox: true,
-            publicKey: const String.fromEnvironment('SWERV_PUBLIC_KEY', defaultValue: 'pk_dev_123'),
+            debugMode: true,
+            key: const String.fromEnvironment('SWERV_PUBLIC_KEY', defaultValue: 'pk_dev_123'),
             businessId: const String.fromEnvironment('SWERV_BUSINESS_ID', defaultValue: 'bsn_123'),
             //checkoutId: 'hbnbbbbbb',
             data: SwervpayCheckoutDataModel(
@@ -57,6 +58,7 @@ Navigator.of(context).push(
             },
             onClose: () => print('closed'),
             onLoad: () => print('loaded'),
+            onEvent: (value) => print(value),
         ),
     ),
 );
@@ -67,6 +69,7 @@ Navigator.of(context).push(
 await SwervpayWidget.launchWidget(
     context,
     sandbox: true,
+    debugMode: true,
     key: const String.fromEnvironment('SWERV_PUBLIC_KEY', defaultValue: 'pk_dev_123'),
     businessId: const String.fromEnvironment('SWERV_BUSINESS_ID', defaultValue: 'bsn_123'),
     //checkoutId: 'hbnbbbbbb',
@@ -81,6 +84,7 @@ await SwervpayWidget.launchWidget(
     },
     onClose: () => print('closed'),
     onLoad: () => print('loaded'),
+    onEvent: (value) => print(value),
 );
 ```
 
