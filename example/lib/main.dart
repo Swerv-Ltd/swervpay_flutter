@@ -41,6 +41,7 @@ class HomePage extends StatelessWidget {
             CupertinoPageRoute(
               builder: (c) => SwervpayView(
                 sandbox: true,
+                debugMode: true,
                 publicKey: const String.fromEnvironment('SWERV_PUBLIC_KEY',
                     defaultValue: 'pk_dev_123'),
                 businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
@@ -57,6 +58,7 @@ class HomePage extends StatelessWidget {
                 },
                 onClose: () => print('closed'),
                 onLoad: () => print('loaded'),
+                onEvent: (value) => print(value),
               ),
             ),
           );
@@ -71,6 +73,7 @@ class HomePage extends StatelessWidget {
             await SwervpayWidget.launchWidget(
               context,
               sandbox: true,
+              debugMode: true,
               key: const String.fromEnvironment('SWERV_PUBLIC_KEY',
                   defaultValue: 'pk_dev_123'),
               businessId: const String.fromEnvironment('SWERV_BUSINESS_ID',
@@ -87,6 +90,7 @@ class HomePage extends StatelessWidget {
               },
               onClose: () => print('closed'),
               onLoad: () => print('loaded'),
+              onEvent: (value) => print(value),
             );
           },
           child: const Text('Open Swervpay Widget'),

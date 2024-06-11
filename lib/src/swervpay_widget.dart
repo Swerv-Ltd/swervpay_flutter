@@ -5,6 +5,7 @@ class SwervpayWidget {
   static Future launchWidget(BuildContext ctx,
       {String? key,
       bool sandbox = false,
+      bool debugMode = false,
       String? businessId,
       SwervpayCheckoutScope scope = SwervpayCheckoutScope.deposit,
       SwervpayCheckoutDataModel? data,
@@ -12,7 +13,7 @@ class SwervpayWidget {
       void Function(SwervpayCheckoutResponseModel response)? onSuccess,
       VoidCallback? onClose,
       VoidCallback? onLoad,
-      ValueChanged<String>? onError}) async {
+      ValueChanged<String>? onEvent}) async {
     // Launch the Swervpay widget
 
     return showDialog(
@@ -28,7 +29,8 @@ class SwervpayWidget {
                 scope: scope,
                 data: data,
                 sandbox: sandbox,
-                onError: onError,
+                onEvent: onEvent,
+                debugMode: debugMode,
                 businessId: businessId,
                 checkoutId: checkoutId,
                 onSuccess: onSuccess,

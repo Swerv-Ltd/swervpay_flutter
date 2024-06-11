@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:swervpay_widget/swervpay_widget.dart';
 
+// TODO(mujhtech): Switch back to widget.js url
+
 String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
         [SwervpayCheckoutScope scope = SwervpayCheckoutScope.deposit,
         SwervpayCheckoutDataModel? data,
@@ -18,7 +20,7 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
 </head>
 
 <body onload="setupSwervCheckoutWidget()" style="background-color:#fff;height:100vh;overflow: scroll;">
-    <script type="text/javascript" src="https://cdn.swervpay.co/v1/widget.js"></script>
+    <script type="text/javascript" src="https://cdn.swervpay.co/v1/checkout.js"></script>
     <script type="text/javascript">
         window.onload = setupSwervCheckoutWidget;
         function setupSwervCheckoutWidget() {
@@ -46,6 +48,9 @@ String buildWidgetHtml(String? key, String? businessId, String? checkoutId,
               onClose: function () {
                 sendMessage({ type: "onClose" })
               },
+              onEvent: function (data) {
+                sendMessage({ type: "onEvent", data: data})
+              }
             };
 
             const checkout = new Swervpay.Checkout(config);

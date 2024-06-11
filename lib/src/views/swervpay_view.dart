@@ -19,8 +19,9 @@ class SwervpayView extends StatefulWidget {
     this.onClose,
     this.onLoad,
     this.onSuccess,
-    this.onError,
+    this.onEvent,
     this.sandbox = false,
+    this.debugMode = false,
     this.scope = SwervpayCheckoutScope.deposit,
     super.key,
   });
@@ -34,7 +35,9 @@ class SwervpayView extends StatefulWidget {
   final void Function(SwervpayCheckoutResponseModel response)? onSuccess;
   final VoidCallback? onClose;
   final VoidCallback? onLoad;
-  final ValueChanged<String>? onError;
+
+  final ValueChanged<String>? onEvent;
+  final bool debugMode;
 
   @override
   State<SwervpayView> createState() => _SwervpayViewState();
@@ -145,15 +148,17 @@ class _SwervpayViewState extends State<SwervpayView> {
   void handleResponse(String body) async {
     try {
       final Map<String, dynamic> bodyMap = json.decode(body);
+      if (widget.debugMode) {
+        // ignore: avoid_print
+        print('SwervpayWidget: $bodyMap');
+      }
       String? key = bodyMap['type'] as String?;
       if (key != null) {
         switch (key) {
           case 'onClose':
-          case 'swervpay.widget.closed':
             if (mounted && widget.onClose != null) widget.onClose!();
             break;
           case 'onSuccess':
-          case 'swervpay.widget.checkout_complete':
             var successModel = SwervpayCheckoutResponseModel.fromJson(body);
             if (mounted && widget.onSuccess != null) {
               widget.onSuccess!(successModel);
@@ -162,12 +167,15 @@ class _SwervpayViewState extends State<SwervpayView> {
           case 'onLoad':
             if (mounted && widget.onLoad != null) widget.onLoad!();
             break;
+          case 'onEvent':
+            if (mounted && widget.onLoad != null) widget.onEvent!(body);
+            break;
           default:
         }
       }
     } catch (e) {
-      if (mounted && widget.onError != null) {
-        widget.onError!('SwervpayClient, ${e.toString()}');
+      if (mounted && widget.onEvent != null) {
+        widget.onEvent!('SwervpayClientException, ${e.toString()}');
       }
     }
   }
